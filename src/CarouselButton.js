@@ -1,3 +1,10 @@
 import React from "react";
-const CarouselButton = () => <button />;
+import PropTypes from "prop-types";
+
+const CarouselButton = (props) => <button {...props} />;
+
+CarouselButton.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 export default CarouselButton;
