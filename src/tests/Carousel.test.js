@@ -104,4 +104,23 @@ describe("Carousel", () => {
     slideProps = wrapper.find(CarouselSlide).props();
     expect(slideProps).toEqual({ ...CarouselSlide.defaultProps, ...slides[1] });
   });
+
+  it("should pass defaultImg and defaultHeight to the CarouselSlide", () => {
+    const defaultImg = () => "test";
+    const defaultImgHeight = 1234;
+
+    wrapper.setProps({ defaultImg, defaultImgHeight });
+    expect(wrapper.find(CarouselSlide).prop("Img")).toBe(defaultImg);
+    expect(wrapper.find(CarouselSlide).prop("imgHeight")).toBe(
+      defaultImgHeight
+    );
+  });
+
+  it("should allows individual slides to override Img and imgHeight", () => {
+    const Img = () => "test";
+    const imgHeight = 1234;
+    wrapper.setProps({ slides: [{ ...slides[0], Img, imgHeight }] });
+    expect(wrapper.find(CarouselSlide).prop("Img")).toBe(Img);
+    expect(wrapper.find(CarouselSlide).prop("imgHeight")).toBe(imgHeight);
+  });
 });

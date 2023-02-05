@@ -1,6 +1,7 @@
 import React from "react";
 import { shallow, mount } from "enzyme";
 import CarouselSlide from "../CarouselSlide";
+import styled from "styled-components";
 
 describe("CarouselSlide", () => {
   let wrapper;
@@ -52,29 +53,49 @@ describe("CarouselSlide", () => {
     expect(wrapper.prop("onClick")).toBe(onClick);
     expect(wrapper.prop("className")).toBe(className);
   });
-});
 
-describe("Img", () => {
-  let mounted;
-  const imgUrl = "https://example.com/default.jpg";
+  describe("Img", () => {
+    let mounted;
+    const imgUrl = "https://example.com/default.jpg";
 
-  beforeEach(() => {
-    const Img = CarouselSlide.defaultProps.Img;
-    mounted = mount(<Img src={imgUrl} imgHeight={500} />);
-  });
+    beforeEach(() => {
+      const Img = CarouselSlide.defaultProps.Img;
+      mounted = mount(<Img src={imgUrl} imgHeight={500} />);
+    });
 
-  it("should render an <img> with the given src", () => {
-    expect(mounted.containsMatchingElement(<img src={imgUrl} />)).toBe(true);
-  });
+    it("should render an <img> with the given src", () => {
+      expect(mounted.containsMatchingElement(<img src={imgUrl} />)).toBe(true);
+    });
 
-  it("should has the expected styles", () => {
-    expect(mounted).toHaveStyleRule("width", "100%");
-    expect(mounted).toHaveStyleRule("object-fit", "cover");
-  });
+    it("should has the expected styles", () => {
+      expect(mounted).toHaveStyleRule("width", "100%");
+      expect(mounted).toHaveStyleRule("object-fit", "cover");
+    });
 
-  it("should use imgHeight as the height style property", () => {
-    expect(mounted).toHaveStyleRule("height", "500px");
-    mounted.setProps({ imgHeight: "calc(100vh - 100px)" });
-    expect(mounted).toHaveStyleRule("height", "calc(100vh - 100px)");
+    it("should use imgHeight as the height style property", () => {
+      expect(mounted).toHaveStyleRule("height", "500px");
+      mounted.setProps({ imgHeight: "calc(100vh - 100px)" });
+      expect(mounted).toHaveStyleRule("height", "calc(100vh - 100px)");
+    });
+
+    it("should allow styles to be overridden", () => {
+      const TestImg = styled(CarouselSlide.defaultProps.Img)`
+        width: auto;
+        height: auto;
+        object-fit: fill;
+      `;
+
+      mounted = mount(
+        <CarouselSlide
+          Img={TestImg}
+          imgUrl={imgUrl}
+          description="This prop is required"
+        />
+      );
+
+      expect(mounted.find(TestImg)).toHaveStyleRule("width", "auto");
+      expect(mounted.find(TestImg)).toHaveStyleRule("height", "auto");
+      expect(mounted.find(TestImg)).toHaveStyleRule("object-fit", "fill");
+    });
   });
 });
