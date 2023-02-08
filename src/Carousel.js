@@ -2,11 +2,15 @@ import React from "react";
 import CarouselButton from "./CarouselButton";
 import CarouselSlide from "./CarouselSlide";
 import PropTypes from "prop-types";
+import HasIndex from "./HasIndex";
 
-class Carousel extends React.PureComponent {
+export class Carousel extends React.PureComponent {
   static propTypes = {
     defaultImg: CarouselSlide.propTypes.Img,
     defaultImgHeight: CarouselSlide.propTypes.imgHeight,
+    slideIndex: PropTypes.number.isRequired,
+    slideIndexDecrement: PropTypes.func.isRequired,
+    slideIndexIncrement: PropTypes.func.isRequired,
     slides: PropTypes.arrayOf(PropTypes.shape(CarouselSlide.propTypes))
       .isRequired,
   };
@@ -21,27 +25,31 @@ class Carousel extends React.PureComponent {
   };
 
   handlePrev = () => {
-    const { slides } = this.props;
-    this.setState(({ slideIndex }) => ({
-      slideIndex: (slideIndex + slides.length - 1) % slides.length,
-    }));
+    const { slideIndexDecrement, slides } = this.props;
+    slideIndexDecrement(slides.length);
   };
 
   handleNext = () => {
-    const { slides } = this.props;
-    this.setState(({ slideIndex }) => ({
-      slideIndex: (slideIndex + 1) % slides.length,
-    }));
+    const { slideIndexIncrement, slides } = this.props;
+    slideIndexIncrement(slides.length);
   };
 
   render() {
-    const { defaultImg, defaultImgHeight, slides, ...rest } = this.props;
+    const {
+      defaultImg,
+      defaultImgHeight,
+      slideIndex,
+      slideIndexDecrement: _slideIndexDecrement,
+      slideIndexIncrement: _slideIndexIncrement,
+      slides,
+      ...rest
+    } = this.props;
     return (
       <div {...rest}>
         <CarouselSlide
           Img={defaultImg}
           imgHeight={defaultImgHeight}
-          {...slides[this.state.slideIndex]}
+          {...slides[slideIndex]}
         />
         <CarouselButton data-action="prev" onClick={this.handlePrev}>
           Prev
@@ -53,4 +61,4 @@ class Carousel extends React.PureComponent {
     );
   }
 }
-export default Carousel;
+export default HasIndex(Carousel, "slideIndex");
